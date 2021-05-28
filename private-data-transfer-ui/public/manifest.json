@@ -1,0 +1,7 @@
+{
+  "short_name": "FireFly Private Data Transfer",
+  "name": "FireFly Private Data Transfer",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone"
+}
