@@ -41,20 +41,17 @@ export class FireFlyListener {
     this.ws.close();
   }
 
-  firstMessageOfType(type: string, timeout: number) {
-    return new Promise<FireFlyMessage | undefined>(async (resolve) => {
-      const expire = Date.now() + timeout;
-      while (Date.now() < expire) {
-        for (const message of this.messages) {
-          if (message.type === type) {
-            resolve(message);
-            return;
-          }
+  async firstMessageOfType(type: string, timeout: number) {
+    const expire = Date.now() + timeout;
+    while (Date.now() < expire) {
+      for (const message of this.messages) {
+        if (message.type === type) {
+          return message;
         }
-        await new Promise(resolve => setTimeout(resolve, 100));
       }
-      return undefined;
-    });
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    return undefined;
   }
 }
 
