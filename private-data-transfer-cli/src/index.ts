@@ -2,6 +2,8 @@ import { FireFly, FireFlyListener, FireFlyData } from "./firefly";
 
 const TIMEOUT = 15 * 1000;
 
+const dataValues = (data: FireFlyData[]) => data.map(d => d.value);
+
 async function main() {
   const firefly1 = new FireFly(5000);
   const firefly2 = new FireFly(5001);
@@ -10,19 +12,20 @@ async function main() {
   await ws1.ready();
   await ws2.ready();
 
-  const sendData: FireFlyData = { value: 'Hello' };
-  console.log(`Broadcasting data value from firefly1: ${sendData.value}`);
-  await firefly1.sendBroadcast([sendData]);
+  const sendData: FireFlyData[] = [
+    { value: 'Hello' },
+    { value: 'World' },
+  ];
+  console.log(`Broadcasting data values from firefly1: ${dataValues(sendData)}`);
+  await firefly1.sendBroadcast(sendData);
 
   const receivedMessage = await ws2.firstMessageOfType('message_confirmed', TIMEOUT);
   if (receivedMessage === undefined) {
     throw new Error('No message received');
   }
 
-  for (const dataID of receivedMessage.message.data) {
-    const receivedData = await firefly2.getData(dataID.id);
-    console.log(`Received data value on firefly2: ${receivedData.value}`);
-  }
+  const receivedData = await firefly2.retrieveData(receivedMessage.message.data);
+  console.log(`Received data value on firefly2: ${dataValues(receivedData)}`);
 
   ws1.close();
   ws2.close();
