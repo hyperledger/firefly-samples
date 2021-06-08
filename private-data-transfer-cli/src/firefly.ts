@@ -70,8 +70,9 @@ export class FireFly {
     await this.rest.post(`/namespaces/${this.ns}/broadcast/message`, { data });
   }
 
-  async getData(id: string) {
-    const response = await this.rest.get<FireFlyData>(`/namespaces/${this.ns}/data/${id}`)
-    return response.data;
+  retrieveData(data: FireFlyDataIdentifier[]) {
+    return Promise.all(data.map(d =>
+      this.rest.get<FireFlyData>(`/namespaces/${this.ns}/data/${d.id}`)
+      .then(response => response.data)));
   }
 }
