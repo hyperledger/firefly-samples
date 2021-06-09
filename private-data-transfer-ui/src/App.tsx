@@ -15,22 +15,23 @@ import './App.css';
 
 function App() {
   const classes = useStyles();
-  const [recipient, setRecipient] = useState('');
-  const [files, setFiles] = useState([]);
+  const [recipient, setRecipient] = useState<string>('');
+  const [files, setFiles] = useState<FileList | null>(null);
 
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
         <Grid item xs />
         <Grid item xs={12} md={8} xl={4}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} component="form">
             <h1>Send Data</h1>
-            <FormControl variant="outlined" className={classes.formControl} fullWidth={true}>
+
+            <FormControl variant="outlined" className={classes.formControl} fullWidth={true} disabled={true}>
               <InputLabel id="recipient-label">Recipient</InputLabel>
               <Select
                 labelId="recipient-label"
                 value={recipient}
-                onChange={event => setRecipient(event.target.value)}
+                onChange={event => setRecipient(event.target.value as string)}
                 label="Recipient"
               >
                 <MenuItem value="">&nbsp;</MenuItem>
@@ -38,9 +39,11 @@ function App() {
                 <MenuItem value={2}>Recipient 2</MenuItem>
               </Select>
             </FormControl>
+
             <FormControl className={classes.formControl} fullWidth={true}>
               <TextField label="Public Description" variant="outlined" />
             </FormControl>
+
             <FormControl className={classes.formControl}>
               <input
                 accept="*/*"
@@ -62,6 +65,7 @@ function App() {
               {files && <SelectedFiles files={files} />}
             </FormControl>
             <br />
+
             <FormControl className={classes.formControlRight}>
               <Button
                 variant="contained"
@@ -70,6 +74,7 @@ function App() {
                 Submit
               </Button>
             </FormControl>
+
             <div className={classes.clearFix} />
           </Paper>
         </Grid>
@@ -79,10 +84,19 @@ function App() {
   );
 }
 
-function SelectedFiles({ files }) {
+interface SelectedFilesOptions {
+  files: FileList | null;
+}
+
+function SelectedFiles(options: SelectedFilesOptions) {
+  const { files } = options;
+  if (files === null) {
+    return null;
+  }
+
   const elements = [];
   for (let i=0; i<files.length; i++) {
-    const filename = files.item(i).name;
+    const filename = files.item(i)?.name;
     elements.push(
       <li key={filename}>{filename}</li>
     )
