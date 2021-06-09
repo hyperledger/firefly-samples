@@ -41,13 +41,10 @@ import {
 } from './firefly';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-
-dayjs.extend(relativeTime);
 
 const MEMBERS = ['http://localhost:5000', 'http://localhost:5001'];
 const MAX_MESSAGES = 25;
-const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss UTC';
+const DATE_FORMAT = 'MM/DD/YYYY h:mm:ss A';
 
 function App(): JSX.Element {
   const classes = useStyles();
@@ -210,7 +207,7 @@ function MessageList(options: MessageListOptions) {
     const date = dayjs(message.header.created);
     rows.push(
       <TableRow key={message.header.id}>
-        <TableCell title={date.format(DATE_FORMAT)}>{date.fromNow()}</TableCell>
+        <TableCell>{date.format(DATE_FORMAT)}</TableCell>
         <TableCell>{message.local ? 'self' : message.header.author}</TableCell>
         <TableCell>{data.map((d) => d?.value).join(', ')}</TableCell>
       </TableRow>
