@@ -14,10 +14,10 @@ export interface FireFlyDataIdentifier {
 }
 
 export interface FireFlyMessage {
-  id: string;
-  type: string;
   header: {
+    id: string;
     author: string;
+    type: string;
   }
   local: boolean;
   data: FireFlyDataIdentifier[];

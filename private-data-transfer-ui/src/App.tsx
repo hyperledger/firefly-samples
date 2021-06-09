@@ -8,8 +8,9 @@ import {
   Switch,
   TextField,
 } from '@material-ui/core';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FireFly, FireFlyData, FireFlyMessage } from './firefly';
+import ReconnectingWebsocket from 'reconnecting-websocket';
 import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
   const [messageData, setMessageData] = useState<Map<string, FireFlyData>>();
   const [loading, setLoading] = useState<boolean>(true);
   const [messageText, setMessageText] = useState<string>('');
+  const ws = useRef<ReconnectingWebsocket | null>(null);
 
   const firefly = new FireFly(5001);
 
@@ -44,6 +46,17 @@ function App() {
   useEffect(() => {
     if (loading) {
       loadMessages();
+
+      ws.current = new ReconnectingWebsocket('ws://localhost:5000/ws?namespace=default&ephemeral&autoack');
+      ws.current.onopen = () => {
+        console.log('Websocket connected');
+      };
+      ws.current.onmessage = () => {
+        loadMessages();
+      };
+      ws.current.onerror = (err: any) => {
+        console.error(err);
+      };
     }
   });
 
@@ -122,7 +135,7 @@ function MessageList(options: MessageListOptions) {
   for (const message of messages) {
     const data = message.data.map(d => messageData?.get(d.id));
     elements.push(
-      <li key={message.id}>
+      <li key={message.header.id}>
         From {message.local ? "self" : message.header.author}:&nbsp;
         {JSON.stringify(data.map(d => d?.value))}
       </li>
