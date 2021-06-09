@@ -1,3 +1,19 @@
+// Copyright © 2021 Kaleido, Inc.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import {
   Button,
   FormControl,
@@ -36,9 +52,11 @@ function App() {
   }, []);
 
   const sendBroadcast = () => {
-    firefly.sendBroadcast([{
-      value: messageText,
-    }]);
+    firefly.sendBroadcast([
+      {
+        value: messageText,
+      },
+    ]);
     setMessageText('');
   };
 
@@ -46,7 +64,9 @@ function App() {
     if (loading) {
       loadMessages();
 
-      ws.current = new ReconnectingWebsocket('ws://localhost:5000/ws?namespace=default&ephemeral&autoack');
+      ws.current = new ReconnectingWebsocket(
+        'ws://localhost:5000/ws?namespace=default&ephemeral&autoack'
+      );
       ws.current.onopen = () => {
         console.log('Websocket connected');
       };
@@ -67,7 +87,7 @@ function App() {
           <Paper
             className={classes.paper}
             component="form"
-            onSubmit={event => {
+            onSubmit={(event) => {
               event.preventDefault();
               sendBroadcast();
             }}
@@ -79,7 +99,9 @@ function App() {
                 <Switch
                   checked={true}
                   color="primary"
-                  onClick={() => alert('Private send is not yet supported in this sample.')}
+                  onClick={() =>
+                    alert('Private send is not yet supported in this sample.')
+                  }
                 />
               }
               label="Broadcast to all recipients"
@@ -91,16 +113,12 @@ function App() {
                 label="Message"
                 variant="outlined"
                 value={messageText}
-                onChange={event => setMessageText(event.target.value)}
+                onChange={(event) => setMessageText(event.target.value)}
               />
             </FormControl>
 
             <FormControl className={classes.formControlRight}>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-              >
+              <Button variant="contained" color="primary" type="submit">
                 Submit
               </Button>
             </FormControl>
@@ -132,18 +150,18 @@ function MessageList(options: MessageListOptions) {
 
   const elements = [];
   for (const message of messages) {
-    const data = message.data.map(d => messageData?.get(d.id));
+    const data = message.data.map((d) => messageData?.get(d.id));
     elements.push(
       <li key={message.header.id}>
-        From {message.local ? "self" : message.header.author}:&nbsp;
-        {JSON.stringify(data.map(d => d?.value))}
+        From {message.local ? 'self' : message.header.author}:&nbsp;
+        {JSON.stringify(data.map((d) => d?.value))}
       </li>
     );
   }
   return <ul>{elements}</ul>;
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
   },
