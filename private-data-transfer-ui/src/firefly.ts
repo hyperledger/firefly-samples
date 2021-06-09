@@ -47,18 +47,18 @@ export class FireFly {
     this.rest = axios.create({ baseURL: `http://localhost:${port}/api/v1` });
   }
 
-  async sendBroadcast(data: FireFlyDataSend[]) {
+  async sendBroadcast(data: FireFlyDataSend[]): Promise<void> {
     await this.rest.post(`/namespaces/${this.ns}/broadcast/message`, { data });
   }
 
-  async getMessages() {
+  async getMessages(): Promise<FireFlyMessage[]> {
     const response = await this.rest.get<FireFlyMessage[]>(
       `/namespaces/${this.ns}/messages`
     );
     return response.data;
   }
 
-  retrieveData(data: FireFlyDataIdentifier[]) {
+  retrieveData(data: FireFlyDataIdentifier[]): Promise<FireFlyData[]> {
     return Promise.all(
       data.map((d) =>
         this.rest

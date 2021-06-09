@@ -28,7 +28,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FireFly, FireFlyData, FireFlyMessage } from './firefly';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 
-function App() {
+function App(): JSX.Element {
   const classes = useStyles();
   const [messages, setMessages] = useState<FireFlyMessage[]>([]);
   const [messageData, setMessageData] = useState<Map<string, FireFlyData>>();
@@ -73,7 +73,7 @@ function App() {
       ws.current.onmessage = () => {
         loadMessages();
       };
-      ws.current.onerror = (err: any) => {
+      ws.current.onerror = (err) => {
         console.error(err);
       };
     }
