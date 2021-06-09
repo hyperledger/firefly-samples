@@ -20,7 +20,9 @@ import {
   FormControlLabel,
   Grid,
   makeStyles,
+  MenuItem,
   Paper,
+  Select,
   Switch,
   TextField,
 } from '@material-ui/core';
@@ -28,31 +30,33 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FireFly, FireFlyData, FireFlyMessage } from './firefly';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 
+const MEMBERS = ['http://localhost:5000', 'http://localhost:5001'];
+
 function App(): JSX.Element {
   const classes = useStyles();
   const [messages, setMessages] = useState<FireFlyMessage[]>([]);
   const [messageData, setMessageData] = useState<Map<string, FireFlyData>>();
-  const [loading, setLoading] = useState<boolean>(true);
   const [messageText, setMessageText] = useState<string>('');
+  const [selectedMember, setSelectedMember] = useState<number>(0);
+  const firefly = useRef<FireFly | null>(null);
   const ws = useRef<ReconnectingWebsocket | null>(null);
 
-  const firefly = new FireFly(5001);
-
-  const loadMessages = useCallback(async () => {
-    const messages = await firefly.getMessages();
+  const load = useCallback(async () => {
+    console.log(`Loading data from ${selectedMember}`);
+    firefly.current = new FireFly(MEMBERS[selectedMember]);
+    const messages = await firefly.current.getMessages();
     const messageData = new Map<string, FireFlyData>();
     for (const message of messages) {
-      for (const data of await firefly.retrieveData(message.data)) {
+      for (const data of await firefly.current.retrieveData(message.data)) {
         messageData.set(data.id, data);
       }
     }
     setMessageData(messageData);
     setMessages(messages);
-    setLoading(false);
-  }, []);
+  }, [selectedMember]);
 
   const sendBroadcast = () => {
-    firefly.sendBroadcast([
+    firefly.current?.sendBroadcast([
       {
         value: messageText,
       },
@@ -61,29 +65,31 @@ function App(): JSX.Element {
   };
 
   useEffect(() => {
-    if (loading) {
-      loadMessages();
+    load();
 
-      ws.current = new ReconnectingWebsocket(
-        'ws://localhost:5000/ws?namespace=default&ephemeral&autoack'
-      );
-      ws.current.onopen = () => {
-        console.log('Websocket connected');
-      };
-      ws.current.onmessage = () => {
-        loadMessages();
-      };
-      ws.current.onerror = (err) => {
-        console.error(err);
-      };
+    const wsHost = MEMBERS[selectedMember].replace('http', 'ws');
+    if (ws.current !== null) {
+      ws.current.close();
     }
-  });
+    ws.current = new ReconnectingWebsocket(
+      `${wsHost}/ws?namespace=default&ephemeral&autoack`
+    );
+    ws.current.onopen = () => {
+      console.log('Websocket connected');
+    };
+    ws.current.onmessage = () => {
+      load();
+    };
+    ws.current.onerror = (err) => {
+      console.error(err);
+    };
+  }, [load, selectedMember]);
 
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
         <Grid item xs />
-        <Grid item xs={12} md={8} xl={4}>
+        <Grid item xs={10} md={8} xl={4}>
           <Paper
             className={classes.paper}
             component="form"
@@ -134,7 +140,21 @@ function App(): JSX.Element {
             <MessageList messages={messages} messageData={messageData} />
           </Paper>
         </Grid>
-        <Grid item xs />
+        <Grid item xs={1} md={2} xl={4}>
+          <FormControl style={{ float: 'right' }}>
+            <Select
+              value={selectedMember}
+              onChange={(event) => {
+                console.log(`Set selected member ${event.target.value}`);
+                setSelectedMember(event.target.value as number);
+              }}
+            >
+              {MEMBERS.map((m, i) => (
+                <MenuItem value={i}>{m}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
       </Grid>
     </div>
   );
