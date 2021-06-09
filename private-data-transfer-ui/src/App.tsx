@@ -11,7 +11,6 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FireFly, FireFlyData, FireFlyMessage } from './firefly';
 import ReconnectingWebsocket from 'reconnecting-websocket';
-import './App.css';
 
 function App() {
   const classes = useStyles();
