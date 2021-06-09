@@ -53,8 +53,10 @@ function App(): JSX.Element {
   const ws = useRef<ReconnectingWebsocket | null>(null);
 
   const load = useCallback(async () => {
-    console.log(`Loading data from ${selectedMember}`);
-    firefly.current = new FireFly(MEMBERS[selectedMember]);
+    const host = MEMBERS[selectedMember];
+    console.log(`Loading data from ${host}`);
+
+    firefly.current = new FireFly(host);
     const messages = await firefly.current.getMessages(MAX_MESSAGES);
     const messageData = new Map<string, FireFlyData>();
     for (const message of messages) {
@@ -64,19 +66,6 @@ function App(): JSX.Element {
     }
     setMessageData(messageData);
     setMessages(messages);
-  }, [selectedMember]);
-
-  const sendBroadcast = () => {
-    firefly.current?.sendBroadcast([
-      {
-        value: messageText,
-      },
-    ]);
-    setMessageText('');
-  };
-
-  useEffect(() => {
-    load();
 
     const wsHost = MEMBERS[selectedMember].replace('http', 'ws');
     if (ws.current !== null) {
@@ -94,7 +83,11 @@ function App(): JSX.Element {
     ws.current.onerror = (err) => {
       console.error(err);
     };
-  }, [load, selectedMember]);
+  }, [selectedMember]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   return (
     <div className={classes.root}>
@@ -106,7 +99,12 @@ function App(): JSX.Element {
             component="form"
             onSubmit={(event) => {
               event.preventDefault();
-              sendBroadcast();
+              firefly.current?.sendBroadcast([
+                {
+                  value: messageText,
+                },
+              ]);
+              setMessageText('');
             }}
           >
             <h1>Send Message</h1>
