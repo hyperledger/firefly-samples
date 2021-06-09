@@ -17,6 +17,7 @@ function App() {
   const [messages, setMessages] = useState<FireFlyMessage[]>([]);
   const [messageData, setMessageData] = useState<Map<string, FireFlyData>>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [messageText, setMessageText] = useState<string>('');
 
   const firefly = new FireFly(5001);
 
@@ -35,8 +36,9 @@ function App() {
 
   const sendBroadcast = () => {
     firefly.sendBroadcast([{
-      value: "hello",
+      value: messageText,
     }]);
+    setMessageText('');
   };
 
   useEffect(() => {
@@ -50,7 +52,14 @@ function App() {
       <Grid container spacing={3}>
         <Grid item xs />
         <Grid item xs={12} md={8} xl={4}>
-          <Paper className={classes.paper} component="form" onSubmit={sendBroadcast}>
+          <Paper
+            className={classes.paper}
+            component="form"
+            onSubmit={event => {
+              event.preventDefault();
+              sendBroadcast();
+            }}
+          >
             <h1>Send Message</h1>
 
             <FormControlLabel
@@ -66,7 +75,12 @@ function App() {
             />
 
             <FormControl className={classes.formControl} fullWidth={true}>
-              <TextField label="Message" variant="outlined" />
+              <TextField
+                label="Message"
+                variant="outlined"
+                value={messageText}
+                onChange={event => setMessageText(event.target.value)}
+              />
             </FormControl>
 
             <FormControl className={classes.formControlRight}>
