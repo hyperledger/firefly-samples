@@ -43,8 +43,8 @@ export class FireFly {
   private rest: AxiosInstance;
   private ns = 'default';
 
-  constructor(port: number) {
-    this.rest = axios.create({ baseURL: `http://localhost:${port}/api/v1` });
+  constructor(host: string) {
+    this.rest = axios.create({ baseURL: `${host}/api/v1` });
   }
 
   async sendBroadcast(data: FireFlyDataSend[]): Promise<void> {
