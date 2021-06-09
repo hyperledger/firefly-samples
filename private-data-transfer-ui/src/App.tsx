@@ -24,13 +24,24 @@ import {
   Paper,
   Select,
   Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   TextField,
 } from '@material-ui/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FireFly, FireFlyData, FireFlyMessage } from './firefly';
 import ReconnectingWebsocket from 'reconnecting-websocket';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 const MEMBERS = ['http://localhost:5000', 'http://localhost:5001'];
+const MAX_MESSAGES = 25;
+const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss UTC';
 
 function App(): JSX.Element {
   const classes = useStyles();
@@ -44,7 +55,7 @@ function App(): JSX.Element {
   const load = useCallback(async () => {
     console.log(`Loading data from ${selectedMember}`);
     firefly.current = new FireFly(MEMBERS[selectedMember]);
-    const messages = await firefly.current.getMessages();
+    const messages = await firefly.current.getMessages(MAX_MESSAGES);
     const messageData = new Map<string, FireFlyData>();
     for (const message of messages) {
       for (const data of await firefly.current.retrieveData(message.data)) {
@@ -135,7 +146,7 @@ function App(): JSX.Element {
           <br />
 
           <Paper className={classes.paper}>
-            <h1>Received Messages</h1>
+            <h1>Last {MAX_MESSAGES} Messages Received</h1>
 
             <MessageList messages={messages} messageData={messageData} />
           </Paper>
@@ -150,7 +161,9 @@ function App(): JSX.Element {
               }}
             >
               {MEMBERS.map((m, i) => (
-                <MenuItem value={i}>{m}</MenuItem>
+                <MenuItem key={m} value={i}>
+                  {m}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -168,17 +181,31 @@ interface MessageListOptions {
 function MessageList(options: MessageListOptions) {
   const { messages, messageData } = options;
 
-  const elements = [];
+  const rows = [];
   for (const message of messages) {
     const data = message.data.map((d) => messageData?.get(d.id));
-    elements.push(
-      <li key={message.header.id}>
-        From {message.local ? 'self' : message.header.author}:&nbsp;
-        {JSON.stringify(data.map((d) => d?.value))}
-      </li>
+    const date = dayjs(message.header.created);
+    rows.push(
+      <TableRow key={message.header.id}>
+        <TableCell title={date.format(DATE_FORMAT)}>{date.fromNow()}</TableCell>
+        <TableCell>{message.local ? 'self' : message.header.author}</TableCell>
+        <TableCell>{data.map((d) => d?.value).join(', ')}</TableCell>
+      </TableRow>
     );
   }
-  return <ul>{elements}</ul>;
+
+  return (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Time</TableCell>
+          <TableCell>From</TableCell>
+          <TableCell>Data</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>{rows}</TableBody>
+    </Table>
+  );
 }
 
 const useStyles = makeStyles((theme) => ({
