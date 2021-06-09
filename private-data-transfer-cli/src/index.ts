@@ -16,6 +16,9 @@ async function main() {
     { value: 'Hello' },
     { value: 'World' },
   ];
+
+  // Note: this is currently performing broadcast (not private transfer)
+  // TODO: use private transfer
   console.log(`Broadcasting data values from firefly1: ${dataValues(sendData)}`);
   await firefly1.sendBroadcast(sendData);
 

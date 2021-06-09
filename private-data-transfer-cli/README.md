@@ -16,8 +16,9 @@ ff start data-transfer
 
 ## Running
 
-Once the FireFly stack is ready, run the sample with:
+Once the FireFly stack is ready, set up and run the sample with:
 
 ```
+npm install
 npm start
 ```
