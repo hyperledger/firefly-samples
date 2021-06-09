@@ -33,11 +33,15 @@ export interface FireFlyMessage {
   header: {
     id: string;
     author: string;
-    type: string;
     created: string;
   };
   local: boolean;
   data: FireFlyDataIdentifier[];
+}
+
+export interface FireFlyMessageEvent {
+  type: string;
+  message: FireFlyMessage;
 }
 
 export class FireFly {

@@ -23,6 +23,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   Switch,
   Table,
   TableBody,
@@ -32,7 +33,12 @@ import {
   TextField,
 } from '@material-ui/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FireFly, FireFlyData, FireFlyMessage } from './firefly';
+import {
+  FireFly,
+  FireFlyData,
+  FireFlyMessage,
+  FireFlyMessageEvent,
+} from './firefly';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -49,6 +55,7 @@ function App(): JSX.Element {
   const [messageData, setMessageData] = useState<Map<string, FireFlyData>>();
   const [messageText, setMessageText] = useState<string>('');
   const [selectedMember, setSelectedMember] = useState<number>(0);
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const firefly = useRef<FireFly | null>(null);
   const ws = useRef<ReconnectingWebsocket | null>(null);
 
@@ -77,8 +84,11 @@ function App(): JSX.Element {
     ws.current.onopen = () => {
       console.log('Websocket connected');
     };
-    ws.current.onmessage = () => {
-      load();
+    ws.current.onmessage = (message) => {
+      const data: FireFlyMessageEvent = JSON.parse(message.data);
+      if (data.type === 'message_confirmed') {
+        load();
+      }
     };
     ws.current.onerror = (err) => {
       console.error(err);
@@ -99,11 +109,15 @@ function App(): JSX.Element {
             component="form"
             onSubmit={(event) => {
               event.preventDefault();
+              if (messageText === '') {
+                return;
+              }
               firefly.current?.sendBroadcast([
                 {
                   value: messageText,
                 },
               ]);
+              setShowConfirmation(true);
               setMessageText('');
             }}
           >
@@ -167,6 +181,17 @@ function App(): JSX.Element {
           </FormControl>
         </Grid>
       </Grid>
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={showConfirmation}
+        autoHideDuration={3000}
+        message="Message sent"
+        onClose={() => setShowConfirmation(false)}
+      />
     </div>
   );
 }
