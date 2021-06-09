@@ -46,10 +46,14 @@ const MEMBERS = ['http://localhost:5000', 'http://localhost:5001'];
 const MAX_MESSAGES = 25;
 const DATE_FORMAT = 'MM/DD/YYYY h:mm:ss A';
 
+interface MessageRow {
+  message: FireFlyMessage;
+  data: FireFlyData[];
+}
+
 function App(): JSX.Element {
   const classes = useStyles();
-  const [messages, setMessages] = useState<FireFlyMessage[]>([]);
-  const [messageData, setMessageData] = useState<Map<string, FireFlyData>>();
+  const [messages, setMessages] = useState<MessageRow[]>([]);
   const [messageText, setMessageText] = useState<string>('');
   const [selectedMember, setSelectedMember] = useState<number>(0);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
@@ -62,14 +66,14 @@ function App(): JSX.Element {
 
     firefly.current = new FireFly(host);
     const messages = await firefly.current.getMessages(MAX_MESSAGES);
-    const messageData = new Map<string, FireFlyData>();
+    const rows: MessageRow[] = [];
     for (const message of messages) {
-      for (const data of await firefly.current.retrieveData(message.data)) {
-        messageData.set(data.id, data);
-      }
+      rows.push({
+        message,
+        data: await firefly.current.retrieveData(message.data),
+      });
     }
-    setMessageData(messageData);
-    setMessages(messages);
+    setMessages(rows);
 
     const wsHost = MEMBERS[selectedMember].replace('http', 'ws');
     if (ws.current !== null) {
@@ -157,7 +161,7 @@ function App(): JSX.Element {
           <Paper className={classes.paper}>
             <h1>Last {MAX_MESSAGES} Messages Received</h1>
 
-            <MessageList messages={messages} messageData={messageData} />
+            <MessageList messages={messages} />
           </Paper>
         </Grid>
         <Grid item xs={1} md={2} xl={4}>
@@ -194,22 +198,22 @@ function App(): JSX.Element {
 }
 
 interface MessageListOptions {
-  messages: FireFlyMessage[];
-  messageData?: Map<string, FireFlyData>;
+  messages: MessageRow[];
 }
 
 function MessageList(options: MessageListOptions) {
-  const { messages, messageData } = options;
+  const { messages } = options;
 
   const rows = [];
   for (const message of messages) {
-    const data = message.data.map((d) => messageData?.get(d.id));
-    const date = dayjs(message.header.created);
+    const date = dayjs(message.message.header.created);
     rows.push(
-      <TableRow key={message.header.id}>
+      <TableRow key={message.message.header.id}>
         <TableCell>{date.format(DATE_FORMAT)}</TableCell>
-        <TableCell>{message.local ? 'self' : message.header.author}</TableCell>
-        <TableCell>{data.map((d) => d?.value).join(', ')}</TableCell>
+        <TableCell>
+          {message.message.local ? 'self' : message.message.header.author}
+        </TableCell>
+        <TableCell>{message.data.map((d) => d?.value).join(', ')}</TableCell>
       </TableRow>
     );
   }
