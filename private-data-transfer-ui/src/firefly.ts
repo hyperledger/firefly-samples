@@ -34,6 +34,7 @@ export interface FireFlyMessage {
     id: string;
     author: string;
     type: string;
+    created: string;
   };
   local: boolean;
   data: FireFlyDataIdentifier[];
@@ -51,9 +52,9 @@ export class FireFly {
     await this.rest.post(`/namespaces/${this.ns}/broadcast/message`, { data });
   }
 
-  async getMessages(): Promise<FireFlyMessage[]> {
+  async getMessages(limit: number): Promise<FireFlyMessage[]> {
     const response = await this.rest.get<FireFlyMessage[]>(
-      `/namespaces/${this.ns}/messages`
+      `/namespaces/${this.ns}/messages?limit=${limit}`
     );
     return response.data;
   }
