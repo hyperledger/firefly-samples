@@ -48,7 +48,11 @@ import {
 import ReconnectingWebsocket from 'reconnecting-websocket';
 import dayjs from 'dayjs';
 
-const MEMBERS = ['http://localhost:5000', 'http://localhost:5001'];
+const MEMBERS = [
+  'http://localhost:5000',
+  'http://localhost:5001',
+  'http://localhost:5002',
+];
 const MAX_MESSAGES = 25;
 const DATE_FORMAT = 'MM/DD/YYYY h:mm:ss A';
 
