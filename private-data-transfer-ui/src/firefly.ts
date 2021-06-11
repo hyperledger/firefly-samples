@@ -39,9 +39,41 @@ export interface FireFlyMessage {
   data: FireFlyDataIdentifier[];
 }
 
+export interface FireFlyMessageInput {
+  data: FireFlyDataSend[];
+  group: {
+    name?: string;
+    members: FireFlyMemberInput[];
+  };
+}
+
+export interface FireFlyMemberInput {
+  identity: string;
+}
+
+export interface FireFlyOrganization {
+  name: string;
+  identity: string;
+}
+
 export interface FireFlyMessageEvent {
   type: string;
   message: FireFlyMessage;
+}
+
+export interface FireFlyStatus {
+  defaults: {
+    namespace: string;
+  };
+  node: {
+    registered: boolean;
+    name: string;
+  };
+  org: {
+    registered: boolean;
+    name: string;
+    identity: string;
+  };
 }
 
 export class FireFly {
@@ -56,9 +88,25 @@ export class FireFly {
     await this.rest.post(`/namespaces/${this.ns}/broadcast/message`, { data });
   }
 
+  async sendPrivate(privateMessage: FireFlyMessageInput): Promise<void> {
+    await this.rest.post(`/namespaces/${this.ns}/send/message`, privateMessage);
+  }
+
   async getMessages(limit: number): Promise<FireFlyMessage[]> {
     const response = await this.rest.get<FireFlyMessage[]>(
       `/namespaces/${this.ns}/messages?limit=${limit}`
+    );
+    return response.data;
+  }
+
+  async getStatus(): Promise<FireFlyStatus> {
+    const response = await this.rest.get<FireFlyStatus>(`/status`);
+    return response.data;
+  }
+
+  async getOrgs(): Promise<FireFlyOrganization[]> {
+    const response = await this.rest.get<FireFlyOrganization[]>(
+      `/network/organizations`
     );
     return response.data;
   }
