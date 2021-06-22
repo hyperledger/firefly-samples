@@ -15,9 +15,13 @@
 // limitations under the License.
 
 import {
+  Box,
   Button,
   FormControl,
   FormControlLabel,
+  Checkbox,
+  FormLabel,
+  FormGroup,
   Grid,
   makeStyles,
   MenuItem,
@@ -36,13 +40,19 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FireFly,
   FireFlyData,
+  FireFlyMemberInput,
   FireFlyMessage,
   FireFlyMessageEvent,
+  FireFlyOrganization,
 } from './firefly';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 import dayjs from 'dayjs';
 
-const MEMBERS = ['http://localhost:5000', 'http://localhost:5001'];
+const MEMBERS = [
+  'http://localhost:5000',
+  'http://localhost:5001',
+  'http://localhost:5002',
+];
 const MAX_MESSAGES = 25;
 const DATE_FORMAT = 'MM/DD/YYYY h:mm:ss A';
 
@@ -56,9 +66,15 @@ function App(): JSX.Element {
   const [messages, setMessages] = useState<MessageRow[]>([]);
   const [messageText, setMessageText] = useState<string>('');
   const [selectedMember, setSelectedMember] = useState<number>(0);
-  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const firefly = useRef<FireFly | null>(null);
   const ws = useRef<ReconnectingWebsocket | null>(null);
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [orgs, setOrgs] = useState<FireFlyOrganization[]>([]);
+  const [pickedOrgs, setPickedOrgs] = useState<{ [oName: string]: boolean }>(
+    {}
+  );
+  const [selfOrg, setSelfOrg] = useState('');
+  const [confirmationMessage, setConfirmationMessage] = useState('');
 
   const load = useCallback(async () => {
     const host = MEMBERS[selectedMember];
@@ -74,6 +90,12 @@ function App(): JSX.Element {
       });
     }
     setMessages(rows);
+
+    const orgs = await firefly.current.getOrgs();
+    setOrgs(orgs);
+
+    const status = await firefly.current.getStatus();
+    setSelfOrg(status?.org?.name || '');
 
     const wsHost = MEMBERS[selectedMember].replace('http', 'ws');
     if (ws.current !== null) {
@@ -108,17 +130,41 @@ function App(): JSX.Element {
           <Paper
             className={classes.paper}
             component="form"
-            onSubmit={(event) => {
+            onSubmit={async (event) => {
               event.preventDefault();
-              if (messageText === '') {
-                return;
+              try {
+                if (messageText === '') {
+                  return;
+                }
+                if (isPrivate) {
+                  const recipients: FireFlyMemberInput[] = [];
+                  pickedOrgs[selfOrg] = true;
+                  for (const oName in pickedOrgs) {
+                    if (pickedOrgs[oName]) {
+                      recipients.push({ identity: oName });
+                    }
+                  }
+                  await firefly.current?.sendPrivate({
+                    data: [
+                      {
+                        value: messageText,
+                      },
+                    ],
+                    group: {
+                      members: recipients,
+                    },
+                  });
+                } else {
+                  await firefly.current?.sendBroadcast([
+                    {
+                      value: messageText,
+                    },
+                  ]);
+                }
+                setConfirmationMessage('Message sent');
+              } catch (err) {
+                setConfirmationMessage(`Error: ${err}`);
               }
-              firefly.current?.sendBroadcast([
-                {
-                  value: messageText,
-                },
-              ]);
-              setShowConfirmation(true);
               setMessageText('');
             }}
           >
@@ -127,16 +173,56 @@ function App(): JSX.Element {
             <FormControlLabel
               control={
                 <Switch
-                  checked={true}
+                  checked={!isPrivate}
                   color="primary"
-                  onClick={() =>
-                    alert('Private send is not yet supported in this sample.')
-                  }
+                  onClick={() => setIsPrivate(!isPrivate)}
                 />
               }
-              label="Broadcast to all recipients"
+              label={
+                isPrivate
+                  ? 'Choose recipients'
+                  : 'Broadcast to the whole network'
+              }
               className={classes.formControl}
             />
+
+            {isPrivate && (
+              <Box>
+                <FormControl
+                  component="fieldset"
+                  className={classes.formControl}
+                >
+                  <FormLabel component="legend">Pick recipients</FormLabel>
+                  <FormGroup>
+                    {orgs.map((o, i) => (
+                      <FormControlLabel
+                        key={o.name}
+                        control={
+                          <Checkbox
+                            checked={!!pickedOrgs[o.name] || o.name === selfOrg}
+                            disabled={o.name === selfOrg}
+                            onChange={(e) => {
+                              console.log(e.target);
+                              setPickedOrgs({
+                                ...pickedOrgs,
+                                [e.target.value]: e.target.checked,
+                              });
+                            }}
+                            name={o.name}
+                            value={o.name}
+                          />
+                        }
+                        label={
+                          o.name === selfOrg
+                            ? `${o.name}/${o.identity} (self)`
+                            : `${o.name}/${o.identity}`
+                        }
+                      />
+                    ))}
+                  </FormGroup>
+                </FormControl>
+              </Box>
+            )}
 
             <FormControl className={classes.formControl} fullWidth={true}>
               <TextField
@@ -188,10 +274,10 @@ function App(): JSX.Element {
           vertical: 'bottom',
           horizontal: 'left',
         }}
-        open={showConfirmation}
+        open={!!confirmationMessage}
         autoHideDuration={3000}
-        message="Message sent"
-        onClose={() => setShowConfirmation(false)}
+        message={confirmationMessage}
+        onClose={() => setConfirmationMessage('')}
       />
     </div>
   );
