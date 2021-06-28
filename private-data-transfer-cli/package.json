@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kaleido-io/firefly-samples.git"
+    "url": "git+https://github.com/hyperledger-labs/firefly-samples.git"
   },
   "author": "",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/kaleido-io/firefly-samples/issues"
+    "url": "https://github.com/hyperledger-labs/firefly-samples/issues"
   },
-  "homepage": "https://github.com/kaleido-io/firefly-samples#readme",
+  "homepage": "https://github.com/hyperledger-labs/firefly-samples#readme",
   "dependencies": {
     "axios": "^0.21.1",
     "ts-node": "^10.0.0",

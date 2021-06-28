@@ -7,7 +7,7 @@ data transfer flow on FireFly.
 
 To run the application, you will require a 2-party FireFly system running
 locally on ports 5000-5001. The easiest way to set this up is with the
-[FireFly CLI](https://github.com/kaleido-io/firefly-cli):
+[FireFly CLI](https://github.com/hyperledger-labs/firefly-cli):
 
 ```
 ff init data-transfer 2
