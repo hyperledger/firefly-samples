@@ -94,7 +94,7 @@ export class FireFly {
 
   async getMessages(limit: number): Promise<FireFlyMessage[]> {
     const response = await this.rest.get<FireFlyMessage[]>(
-      `/namespaces/${this.ns}/messages?limit=${limit}`
+      `/namespaces/${this.ns}/messages?limit=${limit}&type=private&type=broadcast`
     );
     return response.data;
   }
