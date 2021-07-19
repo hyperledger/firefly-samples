@@ -1,6 +1,6 @@
 # FireFly Samples
 
-This repository contains sample applications built on top of [FireFly](https://github.com/kaleido-io/firefly).
+This repository contains sample applications built on top of [FireFly](https://github.com/hyperledger-labs/firefly).
 
 The simplest examples to start with are [private-data-transfer-cli](private-data-transfer-cli), which
 implements a basic CLI workflow, and [private-data-transfer-ui](private-data-transfer-ui), which
