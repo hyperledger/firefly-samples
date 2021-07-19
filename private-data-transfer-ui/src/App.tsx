@@ -118,6 +118,54 @@ function App(): JSX.Element {
     };
   }, [selectedMember]);
 
+  const orgName = (message: MessageRow) => {
+    const identity = message.message.header.author;
+    const org = orgs?.find((o) => o.identity === identity);
+    let name = org ? org.name : identity;
+    if (message.message.local) {
+      name = `${name} (self)`;
+    }
+    return name;
+  };
+
+  const MessageList = (options: MessageListOptions) => {
+    const { messages } = options;
+    const classes = useStyles();
+
+    const rows = [];
+    for (const message of messages) {
+      const date = dayjs(message.message.header.created);
+      rows.push(
+        <TableRow key={message.message.header.id}>
+          <TableCell>{date.format(DATE_FORMAT)}</TableCell>
+          <TableCell>{orgName(message)}</TableCell>
+          <TableCell className={classes.scrollRight}>
+            <div>
+              <pre>
+                {message.data
+                  .map((d) => JSON.stringify(d?.value || '', null, 2))
+                  .join(', ')}
+              </pre>
+            </div>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    return (
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Time</TableCell>
+            <TableCell>From</TableCell>
+            <TableCell>Data</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>{rows}</TableBody>
+      </Table>
+    );
+  };
+
   useEffect(() => {
     load();
   }, [load]);
@@ -125,8 +173,8 @@ function App(): JSX.Element {
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
-        <Grid item xs />
-        <Grid item xs={10} md={8} xl={4}>
+        <Grid item xs={1} md={2} xl={3} />
+        <Grid item xs={10} md={8} xl={6}>
           <Paper
             className={classes.paper}
             component="form"
@@ -250,7 +298,7 @@ function App(): JSX.Element {
             <MessageList messages={messages} />
           </Paper>
         </Grid>
-        <Grid item xs={1} md={2} xl={4}>
+        <Grid item xs={1} md={2} xl={3}>
           <FormControl style={{ float: 'right' }}>
             <Select
               value={selectedMember}
@@ -267,6 +315,7 @@ function App(): JSX.Element {
             </Select>
           </FormControl>
         </Grid>
+        <Grid item xs />
       </Grid>
 
       <Snackbar
@@ -285,37 +334,6 @@ function App(): JSX.Element {
 
 interface MessageListOptions {
   messages: MessageRow[];
-}
-
-function MessageList(options: MessageListOptions) {
-  const { messages } = options;
-
-  const rows = [];
-  for (const message of messages) {
-    const date = dayjs(message.message.header.created);
-    rows.push(
-      <TableRow key={message.message.header.id}>
-        <TableCell>{date.format(DATE_FORMAT)}</TableCell>
-        <TableCell>
-          {message.message.local ? 'self' : message.message.header.author}
-        </TableCell>
-        <TableCell>{message.data.map((d) => d?.value).join(', ')}</TableCell>
-      </TableRow>
-    );
-  }
-
-  return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Time</TableCell>
-          <TableCell>From</TableCell>
-          <TableCell>Data</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>{rows}</TableBody>
-    </Table>
-  );
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -340,6 +358,18 @@ const useStyles = makeStyles((theme) => ({
   },
   clearFix: {
     clear: 'both',
+  },
+  scrollRight: {
+    overflowX: 'scroll',
+    [theme.breakpoints.up('xs')]: {
+      maxWidth: 150,
+    },
+    [theme.breakpoints.up('md')]: {
+      maxWidth: 350,
+    },
+    [theme.breakpoints.up('xl')]: {
+      maxWidth: 450,
+    },
   },
 }));
 
