@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from 'axios';
-import WebSocket from 'ws';
+import axios, { AxiosInstance } from "axios";
+import WebSocket from "ws";
 
 export interface FireFlyData {
   value: string;
@@ -14,8 +14,11 @@ export interface FireFlyMessage {
   id: string;
   type: string;
   message: {
+    header: {
+      id: string;
+    };
     data: FireFlyDataIdentifier[];
-  }
+  };
 }
 
 export class FireFlyListener {
@@ -23,11 +26,13 @@ export class FireFlyListener {
   private connected: Promise<void>;
   private messages: FireFlyMessage[] = [];
 
-  constructor(port: number, ns = 'default') {
-    this.ws = new WebSocket(`ws://localhost:${port}/ws?namespace=${ns}&ephemeral&autoack`);
-    this.connected = new Promise<void>(resolve => {
-      this.ws.on('open', resolve);
-      this.ws.on('message', (data: string) => {
+  constructor(port: number, ns = "default") {
+    this.ws = new WebSocket(
+      `ws://localhost:${port}/ws?namespace=${ns}&ephemeral&autoack`
+    );
+    this.connected = new Promise<void>((resolve) => {
+      this.ws.on("open", resolve);
+      this.ws.on("message", (data: string) => {
         this.messages.push(JSON.parse(data));
       });
     });
@@ -49,7 +54,7 @@ export class FireFlyListener {
           return message;
         }
       }
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
     return undefined;
   }
@@ -57,7 +62,7 @@ export class FireFlyListener {
 
 export class FireFly {
   private rest: AxiosInstance;
-  private ns = 'default';
+  private ns = "default";
 
   constructor(port: number) {
     this.rest = axios.create({ baseURL: `http://localhost:${port}/api/v1` });
@@ -68,8 +73,19 @@ export class FireFly {
   }
 
   retrieveData(data: FireFlyDataIdentifier[]) {
-    return Promise.all(data.map(d =>
-      this.rest.get<FireFlyData>(`/namespaces/${this.ns}/data/${d.id}`)
-      .then(response => response.data)));
+    return Promise.all(
+      data.map((d) =>
+        this.rest
+          .get<FireFlyData>(`/namespaces/${this.ns}/data/${d.id}`)
+          .then((response) => response.data)
+      )
+    );
+  }
+
+  async getTransaction(messageId: string) {
+    const response = await this.rest.get(
+      `/namespaces/${this.ns}/messages/${messageId}/transaction`
+    );
+    return response.data;
   }
 }
