@@ -64,7 +64,7 @@ export class FireFly {
   }
 
   async sendBroadcast(data: FireFlyData[]) {
-    await this.rest.post(`/namespaces/${this.ns}/broadcast/message`, { data });
+    await this.rest.post(`/namespaces/${this.ns}/messages/broadcast`, { data });
   }
 
   retrieveData(data: FireFlyDataIdentifier[]) {
