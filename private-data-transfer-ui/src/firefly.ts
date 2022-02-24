@@ -85,11 +85,14 @@ export class FireFly {
   }
 
   async sendBroadcast(data: FireFlyDataSend[]): Promise<void> {
-    await this.rest.post(`/namespaces/${this.ns}/broadcast/message`, { data });
+    await this.rest.post(`/namespaces/${this.ns}/messages/broadcast`, { data });
   }
 
   async sendPrivate(privateMessage: FireFlyMessageInput): Promise<void> {
-    await this.rest.post(`/namespaces/${this.ns}/send/message`, privateMessage);
+    await this.rest.post(
+      `/namespaces/${this.ns}/messages/private`,
+      privateMessage
+    );
   }
 
   async getMessages(limit: number): Promise<FireFlyMessage[]> {
