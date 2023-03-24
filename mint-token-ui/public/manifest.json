@@ -1,0 +1,7 @@
+{
+  "short_name": "FireFly Mint Token Sample",
+  "name": "FireFly Mint Token Sample",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone"
+}

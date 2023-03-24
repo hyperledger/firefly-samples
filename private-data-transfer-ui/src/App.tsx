@@ -78,7 +78,7 @@ function App(): JSX.Element {
 
   const load = useCallback(async () => {
     const host = MEMBERS[selectedMember];
-    console.log(`Loading data from ${host}`);
+    // console.log(`Loading data from ${host}`);
 
     firefly.current = new FireFly(host);
     const messages = await firefly.current.getMessages(MAX_MESSAGES);
