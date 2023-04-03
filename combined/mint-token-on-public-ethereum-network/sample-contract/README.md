@@ -16,21 +16,11 @@ This will create a directory structure under `artifacts` which will contain a `.
 
 ## Deploy your contract
 
-You will need the `.json` file that your compiler generated in the previous step. If you used hardhat to compile a contract in this project, it will be at `artifacts/contracts/<contract_name>.sol/<contract_name>.json`
+You will need the `.json` file that your compiler generated in the previous step. If you used hardhat to compile a contract in this project, it will be at [./artifacts/contracts/FireflySample.sol/FireflySampleToken.json](./artifacts/contracts/FireflySample.sol/FireflySampleToken.json)
 
 If you compiled your contract with Remix, the `.json` file will be under the `artifacts` directory. Copy the contents of this file to a file on your local file system.
 
-You can use the FireFly CLI to deploy your contract with a command like this:
-
-```
-ff deploy ethereum polygon <your_contract>.json
-```
-
-```
-{
-  "address": "0x4C4706aDE858c1D182FBdD1A8A29353b7455b678"
-}
-```
+Follow the [deploy custom smart contract example](https://hyperledger.github.io/firefly/tutorials/custom_contracts/ethereum.html#contract-deployment) to deploy your smart contract. Take a note of the smart contract address and you will need to replace `0x4C4706aDE858c1D182FBdD1A8A29353b7455b678` with that address for thee instructions below.
 
 It's a good idea to search for your contract address on [Polygonscan](https://mumbai.polygonscan.com/) to find out what block number in which the contract was constructed. You will need this for the next step.
 
