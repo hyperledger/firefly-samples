@@ -20,7 +20,7 @@ You will need the `.json` file that your compiler generated in the previous step
 
 If you compiled your contract with Remix, the `.json` file will be under the `artifacts` directory. Copy the contents of this file to a file on your local file system.
 
-Follow the [deploy custom smart contract example](https://hyperledger.github.io/firefly/tutorials/custom_contracts/ethereum.html#contract-deployment) to deploy your smart contract. Take a note of the smart contract address and you will need to replace `0x4C4706aDE858c1D182FBdD1A8A29353b7455b678` with that address for thee instructions below.
+Follow the [deploy custom smart contract example](https://hyperledger.github.io/firefly/tutorials/custom_contracts/ethereum.html#contract-deployment) to deploy your smart contract. Take a note of the smart contract address and you will need to replace `0x4C4706aDE858c1D182FBdD1A8A29353b7455b678` with that address for the instructions below.
 
 It's a good idea to search for your contract address on [Polygonscan](https://mumbai.polygonscan.com/) to find out what block number in which the contract was constructed. You will need this for the next step.
 
