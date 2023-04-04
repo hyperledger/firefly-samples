@@ -59,6 +59,6 @@ Navigate to the FireFly Sandbox at: [http://127.0.0.1:5109](http://127.0.0.1:510
 
 Before you do this step, make sure you have the sample application running following instructions [here](../README.md#running)
 
-Not you can open the Swagger UI or use the [Firefly Sandbox Mint Token tab](http://127.0.0.1:5109/home?action=tokens.mint) to mint a token.
+After you have the sample application running, you can use the [Firefly Sandbox Mint Token tab](http://127.0.0.1:5109/home?action=tokens.mint) to mint a Fungible token using the registered token pool `FireflySample`.
 
 
