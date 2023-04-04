@@ -44,8 +44,8 @@ firefly.listen(sub, async (socket, event) => {
 To run the application, you will need the following setup:
 1. a local FireFly stack running in the gateway mode targeting the Polygon Testnet. Follow [this instruction](https://hyperledger.github.io/firefly/tutorials/chains/polygon_testnet.html#polygon-testnet) to set one up.
 2. Configure the Firefly stack with a token pool.
-   1. You can use `0x4C4706aDE858c1D182FBdD1A8A29353b7455b678`, which is set up to be mintable by any account.
-   2. Or you can deploy your own copy of the same smart contract following instructions in [./sample-contract](./sample-contract)
+   1. You can use the pre-deployed ERC20 smart contract address: `0x4C4706aDE858c1D182FBdD1A8A29353b7455b678`, which is set up to be mintable by any account. In this case, follow the steps from [Create a Token Pool](./sample-contract/README.md#create-a-token-pool) section.
+   2. Or you can deploy your own smart contract of an ERC20 token following all the steps in [./sample-contract](./sample-contract).
 
 
 ## Running
