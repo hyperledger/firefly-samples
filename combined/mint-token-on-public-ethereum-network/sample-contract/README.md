@@ -30,13 +30,13 @@ To index our token and track mint / transfer events we are going to create a Tok
 
 Navigate to the FireFly Sandbox at: [http://127.0.0.1:5109](http://127.0.0.1:5109). On the Tokens tab fill in the following details to **Create a Token Pool**:
 
-| Field                | Value                                        |
-| -------------------- | -------------------------------------------- |
-| **Pool Name**        | `FireflySample`                                  |
-| **Pool Symbol**      | (leave blank)                                |
-| **Type**             | Fungible                                 |
-| **Contract address** | `0x4C4706aDE858c1D182FBdD1A8A29353b7455b678` |
-| **Block number**     | `33769329`                                   |
+| Field                | Value                                                                 |
+| -------------------- | --------------------------------------------------------------------- |
+| **Pool Name**        | `FireflySample`                                                       |
+| **Pool Symbol**      | (leave blank)                                                         |
+| **Type**             | Fungible                                                              |
+| **Contract address** | `0x4C4706aDE858c1D182FBdD1A8A29353b7455b678`                          |
+| **Block number**     | `<set to the latest block number on https://mumbai.polygonscan.com/>` |
 
 ## Mint a token to your wallet
 
