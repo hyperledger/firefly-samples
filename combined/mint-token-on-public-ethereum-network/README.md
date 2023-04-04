@@ -39,6 +39,10 @@ firefly.listen(sub, async (socket, event) => {
 });
 ```
 
+The diagram below shows an overview of steps. You'll use `Firefly CLI` and `Firefly Sandbox UI` to setup a firefly local stack connecting to the Polygon Testnet. Then, run the sample node.js application to automatically mint tokens in a loop after you manually minted a token using sandbox UI:
+
+![sample-setup-overview.jpg](./sample-setup-overview.jpg)
+
 ## Setup
 
 To run the application, you will need the following setup:
