@@ -38,23 +38,6 @@ Navigate to the FireFly Sandbox at: [http://127.0.0.1:5109](http://127.0.0.1:510
 | **Contract address** | `0x4C4706aDE858c1D182FBdD1A8A29353b7455b678` |
 | **Block number**     | `33769329`                                   |
 
-## Create a Contract Interface
-
-1. First, navigate to the [FireFly Sandbox](http://127.0.0.1:5109/home?action=contracts.interface) and go to the **Contracts** tab. Expand the **Define a Contract Interface** section.
-1. Select **ABI - Solidity Application Binary Interface** from the Interface Format drop down.
-1. Give it a name, such as **`FireflySample`**
-1. Give it a version such as **`1.0`**
-2. Copy the `"abi"` section from the [combined JSON file for the contract in this repo](./artifacts/contracts/FireFlySample.sol/FireFlySampleToken.json). Copy the whole JSON array. Paste this into the **Schema** field in the Sandbox.
-3. Click **Run**
-
-## Register a Contract API
-
-1. Still on the same page in the Sandbox, expand the `Register a Contract API` section.
-1. Ensure the **`FireflySample`** Contract Interface created in the step above is selected
-1. Give it a URL-safe name such as **`FireflySample`**
-1. Paste the contract address: **`0x4C4706aDE858c1D182FBdD1A8A29353b7455b678`**
-1. Click **Run**
-
 ## Mint a token to your wallet
 
 Before you do this step, make sure you have the sample application running following instructions [here](../README.md#running)
