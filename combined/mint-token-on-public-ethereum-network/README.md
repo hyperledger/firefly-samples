@@ -1,8 +1,7 @@
 # Mint Token on Polygon Testnet
+This sample includes a Node.js application that demonstrates how to mint more ERC20 tokens when a mint event is detected on a public Ethereum-based blockchain network.
 
-This sample contains a node.js application that demonstrates minting ERC20 tokens using FireFly on a public ethereum based blockchain network when some specific events are detected.
-
-The core logic to achieve the sample is [here](https://github.com/kaleido-io/firefly-samples/blob/combined-sample/combined/mint-token-on-public-ethereum-network/src/firefly-client.ts?plain%3D1#L37-L69):
+The core logic for this sample can be found [here](https://github.com/kaleido-io/firefly-samples/blob/combined-sample/combined/mint-token-on-public-ethereum-network/src/firefly-client.ts?plain%3D1#L37-L69):
 ```
 const firefly = new FireFly({ host: "http://localhost:5000" });
 const sub: FireFlySubscriptionBase = {
@@ -39,22 +38,25 @@ firefly.listen(sub, async (socket, event) => {
 });
 ```
 
-The diagram below shows an overview of steps. You'll use `Firefly CLI` and `Firefly Sandbox UI` to setup a firefly local stack connecting to the Polygon Testnet. Then, run the sample node.js application to automatically mint tokens in a loop after you manually minted a token using sandbox UI:
+The diagram below provides an overview of the steps required to set up a Firefly local stack that connects to the Polygon Testnet.
+
+You will use both the Firefly CLI and the Firefly Sandbox UI to complete this process. Once you have completed the setup, you can run a sample Node.js application that will automatically mint tokens in a loop after you have manually minted a token using the Sandbox UI.
 
 ![sample-setup-overview.jpg](./sample-setup-overview.jpg)
 
 ## Setup
 
-To run the application, you will need the following setup:
-1. a local FireFly stack running in the gateway mode targeting the Polygon Testnet. Follow [this instruction](https://hyperledger.github.io/firefly/tutorials/chains/polygon_testnet.html#polygon-testnet) to set one up.
-2. Configure the Firefly stack with a token pool.
-   1. You can use the pre-deployed ERC20 smart contract address: `0x4C4706aDE858c1D182FBdD1A8A29353b7455b678`, which is set up to be mintable by any account. In this case, follow the steps from [Create a Token Pool](./sample-contract/README.md#create-a-token-pool) section.
-   2. Or you can deploy your own smart contract of an ERC20 token following all the steps in [./sample-contract](./sample-contract).
+To run the application, you will need to have the following setup:
+
+1. A local Firefly stack that is running in gateway mode and is targeting the Polygon Testnet. You can follow the instructions provided in [this tutorial](https://hyperledger.github.io/firefly/tutorials/chains/polygon_testnet.html#polygon-testnet) to set up the stack.
+2. The Firefly stack needs to be configured with a token pool. There are two options available:
+   - You can use the pre-deployed ERC20 smart contract address `0x4C4706aDE858c1D182FBdD1A8A29353b7455b678`, which has been set up to be mintable by any account. If you choose this option, you should follow the steps outlined in the "Create a Token Pool" section of [the README.md file in the sample-contract directory](./sample-contract/README.md#create-a-token-pool).
+   - Alternatively, you can deploy your own smart contract for an ERC20 token by following all the steps provided in the [./sample-contract](./sample-contract) directory.
 
 
 ## Running
 
-Once the FireFly stack is ready, set up and run the sample with:
+Once the FireFly stack is ready, run the sample node.js app with:
 
 ```
 export ACCOUNT_ADDRESS=replace_with_the_account_address_of_your_local_stack
