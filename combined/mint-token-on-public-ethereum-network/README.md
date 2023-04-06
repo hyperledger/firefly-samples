@@ -59,6 +59,8 @@ To run the application, you will need to have the following setup:
 Once the FireFly stack is ready, run the sample node.js app with:
 
 ```
+# make sure you are running the commands below in the same directory of this Readme file
+# for example: cd combined/mint-token-on-public-ethereum-network
 export ACCOUNT_ADDRESS=replace_with_the_account_address_of_your_local_stack
 npm install
 npm start
