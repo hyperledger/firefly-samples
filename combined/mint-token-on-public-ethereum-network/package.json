@@ -1,0 +1,22 @@
+{
+  "name": "mint-token-on-polygon-testnet",
+  "version": "1.0.0",
+  "description": "This sample contains a frontend (React) application that demonstrates minting an ERC20 token using FireFly on a public ethereum based blockchain network.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node build/firefly-client.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hyperledger/firefly-sdk": "^1.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "@types/ws": "^8.5.4",
+    "typescript": "^5.0.3"
+  }
+}
