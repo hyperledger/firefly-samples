@@ -63,7 +63,7 @@ Once the FireFly stack is ready, run the sample node.js app with:
 ```
 # make sure you are running the commands below in the same directory of this Readme file
 # for example: cd combined/mint-token-on-public-ethereum-network
-export ACCOUNT_ADDRESS=replace_with_the_account_address_of_your_local_stack
+export ACCOUNT_ADDRESS=$(ff accounts list polygon | jq -r '.[0].address') && echo "ACCOUNT_ADDRESS is now set to $ACCOUNT_ADDRESS"
 npm install
 npm start
 ```

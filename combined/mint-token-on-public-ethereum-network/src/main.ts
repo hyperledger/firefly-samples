@@ -17,7 +17,7 @@
 import FireFly, { FireFlySubscriptionBase } from "@hyperledger/firefly-sdk";
 
 let totalMinted = 0;
-let MAX_TOTAL_MINTED = 5;
+let MAX_TOTAL_MINTED = 2;
 if (
   !process.env.ACCOUNT_ADDRESS ||
   !process.env.ACCOUNT_ADDRESS.startsWith("0x")
@@ -57,7 +57,7 @@ firefly.listen(sub, async (socket, event) => {
       operations[0].input?.to?.toLowerCase() === process.env.ACCOUNT_ADDRESS &&
       operations[0].input?.type === "mint"
     ) {
-      console.log("Mint the same token again to get us into a loop");
+      console.log("Mint event detected, minting another token...");
       await firefly.mintTokens({
         amount: operations[0].input?.amount,
         idempotencyKey: operations[0].input?.localId,
@@ -73,14 +73,14 @@ firefly.listen(sub, async (socket, event) => {
  */
 
 function wait() {
-  if (totalMinted <= MAX_TOTAL_MINTED) {
+  if (totalMinted < MAX_TOTAL_MINTED) {
     setTimeout(wait, 5000);
     console.log(
-      `Waiting for more events..., total token minted by this application: ${totalMinted}`
+      `Waiting for more tokens to be minted..., total token minted during the run: ${totalMinted}`
     );
   } else {
     console.log(
-      `Exiting the application ${totalMinted}/${MAX_TOTAL_MINTED} tokens were minted.`
+      `Exiting the application with ${totalMinted}/${MAX_TOTAL_MINTED} minted.`
     );
     process.exit(0);
   }

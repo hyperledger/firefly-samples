@@ -56,7 +56,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var firefly_sdk_1 = __importDefault(require("@hyperledger/firefly-sdk"));
 var totalMinted = 0;
-var MAX_TOTAL_MINTED = 5;
+var MAX_TOTAL_MINTED = 2;
 if (!process.env.ACCOUNT_ADDRESS ||
     !process.env.ACCOUNT_ADDRESS.startsWith("0x")) {
     console.log("ACCOUNT_ADDRESS must be set to a valid eth address, you should use the account of your local Firefly stack.");
@@ -89,7 +89,7 @@ firefly.listen(sub, function (socket, event) { return __awaiter(void 0, void 0, 
                 console.log("Retrieved operation: ".concat(JSON.stringify(operations[0].input)));
                 if (!(((_b = (_a = operations[0].input) === null || _a === void 0 ? void 0 : _a.to) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === process.env.ACCOUNT_ADDRESS &&
                     ((_c = operations[0].input) === null || _c === void 0 ? void 0 : _c.type) === "mint")) return [3 /*break*/, 3];
-                console.log("Mint the same token again to get us into a loop");
+                console.log("Mint event detected, minting another token...");
                 return [4 /*yield*/, firefly.mintTokens({
                         amount: (_d = operations[0].input) === null || _d === void 0 ? void 0 : _d.amount,
                         idempotencyKey: (_e = operations[0].input) === null || _e === void 0 ? void 0 : _e.localId,
@@ -107,12 +107,12 @@ firefly.listen(sub, function (socket, event) { return __awaiter(void 0, void 0, 
  * Main firefly SDK example code END
  */
 function wait() {
-    if (totalMinted <= MAX_TOTAL_MINTED) {
+    if (totalMinted < MAX_TOTAL_MINTED) {
         setTimeout(wait, 5000);
-        console.log("Waiting for more events..., total token minted by this application: ".concat(totalMinted));
+        console.log("Waiting for more tokens to be minted..., total token minted during the run: ".concat(totalMinted));
     }
     else {
-        console.log("Exiting the application ".concat(totalMinted, "/").concat(MAX_TOTAL_MINTED, " tokens were minted."));
+        console.log("Exiting the application with ".concat(totalMinted, "/").concat(MAX_TOTAL_MINTED, " minted."));
         process.exit(0);
     }
 }
