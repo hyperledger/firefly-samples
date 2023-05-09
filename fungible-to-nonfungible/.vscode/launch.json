@@ -1,0 +1,19 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/main.ts",
+      "outFiles": ["${workspaceFolder}/**/*.js"],
+      "env": {
+        "MY_ADDRESS": "0xaea65640762eebc24f11a430bc65ec8e098c85bc"
+      }
+    }
+  ]
+}

@@ -4,7 +4,7 @@ This sample includes a Node.js application that demonstrates how to mint more ER
 
 The core logic for this sample can be found [here](https://github.com/kaleido-io/firefly-samples/blob/combined-sample/combined/mint-token-on-public-ethereum-network/src/firefly-client.ts?plain%3D1#L37-L69):
 
-```
+```javascript
 const firefly = new FireFly({ host: "http://localhost:5000" });
 const sub: FireFlySubscriptionBase = {
   filter: {

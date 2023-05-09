@@ -1,0 +1,18 @@
+{
+  "name": "fungible-to-nonfungible",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf ./build",
+    "build": "npm run clean && tsc",
+    "start": "npm run build && node ./build/main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hyperledger/firefly-sdk": "^1.2.7",
+    "typescript": "^5.0.4"
+  }
+}
