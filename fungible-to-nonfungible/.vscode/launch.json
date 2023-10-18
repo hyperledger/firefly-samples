@@ -10,10 +10,7 @@
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/main.ts",
-      "outFiles": ["${workspaceFolder}/**/*.js"],
-      "env": {
-        "MY_ADDRESS": "0xaea65640762eebc24f11a430bc65ec8e098c85bc"
-      }
+      "outFiles": ["${workspaceFolder}/**/*.js"]
     }
   ]
 }
