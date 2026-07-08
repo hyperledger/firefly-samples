@@ -1,0 +1,31 @@
+# Dependabot configuration
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+# Ecosystems in this repo:
+#   - npm: each sample app directory (all current Dependabot alerts are here)
+#
+# Each directory groups ALL of its updates into a single PR per run. Both regular
+# version updates and security fixes are grouped, so Dependabot opens at most one
+# PR per directory (security updates are otherwise opened individually and
+# ungrouped by default).
+
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directories:
+      - "/fungible-to-nonfungible"
+      - "/private-data-transfer-ui"
+      - "/private-data-transfer-cli"
+      - "/combined/mint-token-on-public-ethereum-network"
+      - "/combined/mint-token-on-public-ethereum-network/sample-contract"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      npm:
+        applies-to: version-updates
+        patterns: ["*"]
+      npm-security:
+        applies-to: security-updates
+        patterns: ["*"]
